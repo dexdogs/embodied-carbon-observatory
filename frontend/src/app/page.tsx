@@ -8,7 +8,7 @@ import FilterBar from '@/components/FilterBar'
 import PlantPanel from '@/components/PlantPanel'
 import { InsightsBanner, Legend } from '@/components/InsightsBanner'
 
-const MAPBOX_TOKEN = 'MAPBOX_TOKEN_REMOVED'
+const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ''
 
 function gwpColor(pct: number | null, hasData: boolean): string {
   if (!hasData) return '#1a3a2a'  // dark green — not yet indexed by Dexdogs

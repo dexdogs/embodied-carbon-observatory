@@ -16,7 +16,7 @@ export default function Map({ onMapReady }: Props) {
       const mapboxgl = (await import('mapbox-gl')).default
       await import('mapbox-gl/dist/mapbox-gl.css')
       
-      mapboxgl.accessToken = 'MAPBOX_TOKEN_REMOVED'
+      mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ''
 
       map = new mapboxgl.Map({
         container: containerRef.current!,
