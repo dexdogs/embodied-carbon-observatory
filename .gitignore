@@ -1,0 +1,9 @@
+.env
+.env.local
+__pycache__/
+*.pyc
+*.log
+.DS_Store
+venv/
+node_modules/
+egrid_cache/
