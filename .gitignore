@@ -8,3 +8,9 @@ venv/
 node_modules/
 egrid_cache/
 frontend/.next/
+pipeline/data/egrid_shapefiles/*.shp
+pipeline/data/egrid_shapefiles/*.shx
+pipeline/data/egrid_shapefiles/*.dbf
+pipeline/data/egrid_shapefiles/*.sbn
+pipeline/data/egrid_shapefiles/*.sbx
+pipeline/data/egrid_shapefiles/*.zip
