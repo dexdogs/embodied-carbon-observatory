@@ -60,12 +60,12 @@ log = logging.getLogger(__name__)
 # ============================================================
 
 EGRID_FILES = {
-    2023: "https://www.epa.gov/system/files/documents/2025-01/egrid2023_data.xlsx",
+    2023: "https://www.epa.gov/system/files/documents/2025-06/egrid2023_data_rev2.xlsx",
     2022: "https://www.epa.gov/system/files/documents/2024-01/egrid2022_data.xlsx",
-    2021: "https://www.epa.gov/system/files/documents/2023-01/egrid2021_data.xlsx",
-    2020: "https://www.epa.gov/system/files/documents/2022-09/egrid2020_data.xlsx",
-    2019: "https://www.epa.gov/system/files/documents/2021-02/egrid2019_data.xlsx",
-    2018: "https://www.epa.gov/system/files/documents/2020-03/egrid2018_data.xlsx",
+    2021: "https://www.epa.gov/system/files/documents/2023-01/eGRID2021_data.xlsx",
+    2020: "https://www.epa.gov/system/files/documents/2022-09/eGRID2020_Data_v2.xlsx",
+    2019: "https://www.epa.gov/sites/default/files/2021-02/egrid2019_data.xlsx",
+    2018: "https://www.epa.gov/sites/default/files/2020-03/egrid2018_data_v2.xlsx",
     2016: "https://www.epa.gov/system/files/documents/2020-01/egrid2016_data.xlsx",
     2014: "https://www.epa.gov/system/files/documents/2020-01/egrid2014_data.xlsx",
     2012: "https://www.epa.gov/system/files/documents/2020-01/egrid2012_data.xlsx",
@@ -166,7 +166,10 @@ COLUMN_MAPPINGS = {
     ],
     # CO2e rate (lb/MWh) — combined
     "co2e_rate": [
-        "SRCO2ERTA", "co2e_rate_lb_per_mwh",
+        "SRCO2RTA",    # annual output emission rate lb/MWh (confirmed 2022)
+        "SRCO2ERTA",   # alternate name some vintages
+        "SRC2ERTA",    # older vintages
+        "co2e_rate_lb_per_mwh",
         "Subregion Annual CO2 Equivalent Total Output Emission Rate (lb/MWh)"
     ],
     # Resource mix percentages
@@ -251,7 +254,7 @@ def find_column(df: pd.DataFrame, field: str) -> Optional[str]:
     # Fuzzy fallback — check if any column contains key words
     field_keywords = {
         "subregion":  ["SUBRGN", "SUBREGION"],
-        "co2e_rate":  ["CO2E", "CO2EQ", "EQUIVALENT"],
+        "co2e_rate":  ["CO2ERTA", "CO2ERTE"],  # must end in RTA/RTE = rate, not totals
         "co2_rate":   ["CO2R"],
         "ch4_rate":   ["CH4R"],
         "n2o_rate":   ["N2OR"],
@@ -515,7 +518,7 @@ def print_summary(conn):
             SELECT
                 EXTRACT(year FROM year)::int AS yr,
                 ROUND(co2e_rate_lb_per_mwh::numeric, 1) AS co2e_rate,
-                ROUND(resource_mix_pct_renewable::numeric, 1) AS pct_renewable
+                ROUND((COALESCE(resource_mix_pct_wind,0) + COALESCE(resource_mix_pct_solar,0) + COALESCE(resource_mix_pct_hydro,0))::numeric, 1) AS pct_renewable
             FROM grid_carbon
             WHERE egrid_subregion = 'NEWE'
             ORDER BY year;

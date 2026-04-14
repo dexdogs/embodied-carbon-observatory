@@ -184,25 +184,48 @@ def get_plants_with_multiple_epds(conn, category: str = None) -> list[dict]:
 
 def get_epd_versions_for_plant(conn, plant_id: str) -> list[dict]:
     """
-    Get all EPD versions for a plant, ordered chronologically.
+    Get one canonical EPD per (year, declared_unit) for a plant.
+    Uses median GWP across all EPDs of that unit in that year.
+    Only returns unit/years with data in 2+ distinct years (needed for attribution).
     """
     sql = """
+        WITH yearly AS (
+            SELECT
+                plant_id,
+                declared_unit,
+                EXTRACT(year FROM issued_at)::int   AS epd_year,
+                MIN(issued_at)                       AS issued_at,
+                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY gwp_total) AS gwp_total,
+                COUNT(*)                             AS epd_count
+            FROM epd_versions
+            WHERE plant_id = %s
+              AND gwp_total IS NOT NULL
+              AND declared_unit IS NOT NULL
+            GROUP BY plant_id, declared_unit, EXTRACT(year FROM issued_at)::int
+        ),
+        units_ranked AS (
+            SELECT declared_unit,
+                   COUNT(DISTINCT epd_year) AS year_count,
+                   SUM(epd_count)           AS total_epds
+            FROM yearly
+            GROUP BY declared_unit
+            HAVING COUNT(DISTINCT epd_year) >= 2
+            ORDER BY COUNT(DISTINCT epd_year) DESC, SUM(epd_count) DESC
+            LIMIT 1
+        )
         SELECT
-            id,
-            plant_id,
-            ec3_epd_id,
-            issued_at,
-            expired_at,
-            gwp_total,
-            gwp_fossil,
-            gwp_biogenic,
-            is_facility_specific,
-            is_product_specific,
-            declared_unit
-        FROM epd_versions
-        WHERE plant_id = %s
-          AND gwp_total IS NOT NULL
-        ORDER BY issued_at ASC;
+            y.plant_id,
+            y.declared_unit,
+            y.epd_year,
+            y.issued_at,
+            y.gwp_total,
+            y.epd_count,
+            NULL::text AS ec3_epd_id,
+            NULL::boolean AS is_facility_specific,
+            NULL::boolean AS is_product_specific
+        FROM yearly y
+        JOIN units_ranked u USING (declared_unit)
+        ORDER BY y.epd_year ASC;
     """
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(sql, (plant_id,))
@@ -351,13 +374,23 @@ def compute_all_attributions(
                 stats["plants_skipped"] += 1
                 continue
 
-            # Compute attribution for each consecutive pair
-            for i in range(len(epd_versions) - 1):
-                v1 = epd_versions[i]
-                v2 = epd_versions[i + 1]
-
+            # Group by declared_unit — only compare consecutive years within same unit
+            from collections import defaultdict
+            by_unit = defaultdict(list)
+            for epd in epd_versions:
+                by_unit[epd["declared_unit"]].append(epd)
+            consecutive_pairs = []
+            for unit_epds in by_unit.values():
+                unit_epds.sort(key=lambda e: e["epd_year"])
+                for i in range(len(unit_epds) - 1):
+                    consecutive_pairs.append((unit_epds[i], unit_epds[i+1]))
+            if not consecutive_pairs:
+                stats["plants_skipped"] += 1
+                continue
+            for v1, v2 in consecutive_pairs:
                 period_start = v1["issued_at"]
                 period_end   = v2["issued_at"]
+
 
                 # Skip if already computed
                 if not dry_run and attribution_already_computed(
