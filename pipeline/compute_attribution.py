@@ -309,7 +309,7 @@ def insert_attribution_records(
             grid_co2e_start, grid_co2e_end, grid_co2e_delta,
             gwp_delta_grid, gwp_delta_process,
             pct_change_total, pct_from_grid, pct_from_process,
-            attribution_confidence
+            attribution_confidence, declared_unit
         ) VALUES %s
         ON CONFLICT DO NOTHING;
     """
@@ -322,7 +322,7 @@ def insert_attribution_records(
             r["grid_co2e_start"], r["grid_co2e_end"], r["grid_co2e_delta"],
             r["gwp_delta_grid"], r["gwp_delta_process"],
             r["pct_change_total"], r["pct_from_grid"], r["pct_from_process"],
-            r["attribution_confidence"]
+            r["attribution_confidence"], r.get("declared_unit")
         )
         for r in records
     ]
@@ -408,30 +408,31 @@ def compute_all_attributions(
                 year_start = period_start.year
                 year_end   = period_end.year
 
-                grid_start = get_grid_carbon_for_subregion_year(
-                    conn, subregion, year_start
-                )
-                grid_end = get_grid_carbon_for_subregion_year(
-                    conn, subregion, year_end
-                )
-
-                if grid_start is None or grid_end is None:
+                # Skip grid lookup for international/unknown subregion plants
+                if not subregion or subregion == "UNKNOWN":
+                    grid_start = 0.0
+                    grid_end   = 0.0
+                else:
+                    grid_start = get_grid_carbon_for_subregion_year(
+                        conn, subregion, year_start
+                    ) or 0.0
+                    grid_end = get_grid_carbon_for_subregion_year(
+                        conn, subregion, year_end
+                    ) or 0.0
+                if grid_start == 0.0 and grid_end == 0.0 and subregion:
                     stats["no_grid_data"] += 1
-                    # Still compute attribution, just without grid decomposition
-                    grid_start = grid_start or 0.0
-                    grid_end   = grid_end or 0.0
-
                 attribution = compute_grid_contribution(
                     gwp_start, gwp_end,
                     grid_start, grid_end
                 )
 
                 record = {
-                    "plant_id":     plant_id,
-                    "period_start": period_start,
-                    "period_end":   period_end,
-                    "gwp_start":    gwp_start,
-                    "gwp_end":      gwp_end,
+                    "plant_id":      plant_id,
+                    "period_start":  period_start,
+                    "period_end":    period_end,
+                    "gwp_start":     gwp_start,
+                    "gwp_end":       gwp_end,
+                    "declared_unit": v1.get("declared_unit"),
                     **attribution
                 }
 
