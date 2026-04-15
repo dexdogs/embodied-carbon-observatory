@@ -199,18 +199,20 @@ export default function Home() {
         const geojson = await api.getPlants(params)
         const enriched = {
           ...geojson,
-          features: geojson.features.map((f: any) => ({
-            ...f,
-            properties: {
-              ...f.properties,
-              dot_color: gwpColor(f.properties.has_temporal === true, f.properties.latest_gwp !== null),
-              dot_size: f.properties.has_temporal === true ? 8 : f.properties.latest_gwp !== null ? 6 : 4,
-              has_temporal: f.properties.has_temporal,
-            }
-          }))
+          features: geojson.features
+            .filter((f: any) => f.properties.name !== 'Boston Plant')
+            .map((f: any) => ({
+              ...f,
+              properties: {
+                ...f.properties,
+                dot_color: gwpColor(f.properties.has_temporal === true, f.properties.latest_gwp !== null),
+                dot_size: f.properties.has_temporal === true ? 8 : f.properties.latest_gwp !== null ? 6 : 4,
+                has_temporal: f.properties.has_temporal,
+              }
+            }))
         }
 
-        const total = geojson.count
+        const total = enriched.features.length
         const indexed = enriched.features.filter((f: any) => f.properties.has_temporal === true).length
         const oneEpd = enriched.features.filter((f: any) => f.properties.latest_gwp !== null && f.properties.has_temporal !== true).length
         const notIndexed = enriched.features.filter((f: any) => f.properties.latest_gwp === null).length
