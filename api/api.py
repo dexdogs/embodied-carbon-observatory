@@ -222,7 +222,9 @@ def get_plants(
             a.pct_change_total    AS gwp_pct_change,
             a.pct_from_grid       AS pct_change_from_grid,
             a.pct_from_process    AS pct_change_from_process,
-            a.attribution_confidence
+            a.attribution_confidence,
+            -- Temporal flag: has 2+ years of EPD data
+            CASE WHEN epd_years.year_count >= 2 THEN true ELSE false END AS has_temporal
             {distance_select}
         FROM plants p
         -- Join to most recent gwp_delta
@@ -233,6 +235,12 @@ def get_plants(
             ORDER BY period DESC
             LIMIT 1
         ) gd ON TRUE
+        -- Temporal year count
+        LEFT JOIN LATERAL (
+            SELECT COUNT(DISTINCT EXTRACT(year FROM issued_at)) AS year_count
+            FROM epd_versions
+            WHERE plant_id = p.id AND gwp_total IS NOT NULL
+        ) epd_years ON TRUE
         -- Join to most recent attribution
         LEFT JOIN LATERAL (
             SELECT
