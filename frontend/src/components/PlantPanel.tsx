@@ -317,11 +317,8 @@ export default function PlantPanel({ plant, onClose }: Props) {
       <div className="flex-1 overflow-y-auto">
         {!loading && !plant.latest_gwp && (
           <div className="p-4 text-center fade-in">
-            <div className="font-mono text-xs mb-2" style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#f5c542' }}>
-              Not yet indexed by Dexdogs
-            </div>
-            <div className="font-mono text-xs text-muted">
-              This plant exists in EC3 but EPD data has not been indexed yet. Check back soon.
+            <div className="font-mono text-xs text-muted leading-relaxed">
+              Not included in this demo. Reach out to dexdogs for indexed intelligence on this plant.
             </div>
           </div>
         )}
