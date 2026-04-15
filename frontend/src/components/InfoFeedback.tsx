@@ -75,12 +75,12 @@ export default function InfoFeedback() {
 
           <div className="mb-3" style={{ borderTop: '1px solid var(--border)', paddingTop: '10px' }}>
             <p className="font-mono mb-2" style={{ color: 'var(--teal)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              The grid vs. process decomposition is alpha
+              The grid vs. process decomposition is alpha.
             </p>
             <p className="text-text leading-relaxed mb-2">
-              When a concrete plant's EPD shows improving GWP, the obvious interpretation is "this company is decarbonizing." But if 80% of that improvement came from the grid getting cleaner — that's not operational excellence, that's geographic luck. The plant did nothing. A fund holding that company's bonds or equity on the basis of "carbon improvement trajectory" has been misled by a number that looks like management action but isn't.
+              When a concrete plant's EPD shows improving GWP, the obvious interpretation is "this company is decarbonizing." But if 80% of that improvement came from the grid getting cleaner: that's not operational excellence, that's geographic luck. The plant did nothing. A fund holding that company's bonds or equity on the basis of "carbon improvement trajectory" has been misled by a number that looks like management action but isn't.
             </p>
-            <p className="font-mono mb-1" style={{ color: 'var(--muted)', fontSize: '9px', textTransform: 'uppercase' }}>The process-driven component tells you:</p>
+            <p className="font-mono mb-1" style={{ color: 'var(--muted)', fontSize: '9px', textTransform: 'uppercase' }}>The process-driven component is what actually tells you:</p>
             <ul className="mb-3" style={{ paddingLeft: '12px', listStyleType: 'disc' }}>
               {[
                 'Is management making capital investments in lower-carbon inputs?',
@@ -94,16 +94,16 @@ export default function InfoFeedback() {
 
           <div className="mb-3" style={{ borderTop: '1px solid var(--border)', paddingTop: '10px' }}>
             <p className="font-mono mb-2" style={{ color: 'var(--teal)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              What dexdogs has productized
+              What dexdogs has productized:
             </p>
             <p className="text-text leading-relaxed mb-2">
-              The facility-level scorecard — which plants are genuinely improving vs. riding grid tailwinds. Aggregated to company level, that becomes a carbon quality score that no Bloomberg terminal, no ESG rating agency, and no sell-side analyst currently publishes with this level of operational specificity.
+              The first query gives you a facility-level scorecard: which plants are genuinely improving vs. riding grid tailwinds. Aggregated to company level that becomes a carbon quality score that no Bloomberg terminal, no ESG rating agency, and no sell-side analyst currently publishes with this level of operational specificity.
             </p>
             <p className="text-text leading-relaxed mb-2">
-              The counterfactual time series — the "what if only the grid changed" line on the chart. That's the baseline needed to strip out the macro from the micro. It's the difference between a company with genuine process innovation and one that looks green on paper because California built more solar.
+              The second query gives you the counterfactual time series: the "what if only the grid changed" line on the chart. That's the baseline you need to strip out the macro from the micro. It's the difference between a company with genuine process innovation and one that looks green on paper because California built more solar.
             </p>
             <p className="text-text leading-relaxed">
-              For a $2B materials sector fund, knowing which cement and concrete plants are genuinely decarbonizing their process — not just benefiting from renewable energy build-out — is a differentiated view that affects how you underwrite the transition risk of their bonds and the terminal value assumptions in your equity models.
+              For a $2B materials sector fund, knowing which cement and concrete plants are genuinely decarbonizing their process, not just benefiting from renewable energy build-out, is a differentiated view that affects how you underwrite the transition risk of their bonds and the terminal value assumptions in your equity models.
             </p>
           </div>
 
