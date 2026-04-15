@@ -11,7 +11,7 @@ import { InsightsBanner, Legend } from '@/components/InsightsBanner'
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ''
 
 function gwpColor(hasTemporal: boolean, hasEPD: boolean): string {
-  if (hasTemporal) return '#f5c542'   // yellow — multi-year temporal data
+  if (hasTemporal) return '#FFE000'   // yellow — multi-year temporal data
   if (hasEPD)      return '#4a9e6b'   // light green — has EPDs but single year
   return '#6b6b6b'                     // gray — not yet indexed
 }
@@ -53,17 +53,30 @@ export default function Home() {
         m.addLayer({ id: 'plants-halo', type: 'circle', source: 'plants',
           paint: { 'circle-radius': 10, 'circle-color': ['get', 'dot_color'], 'circle-opacity': 0.15, 'circle-blur': 0.8 } })
 
-        // Pulsing ring for temporal plants
+        // Pulsing ring for temporal plants — animated via requestAnimationFrame
         m.addLayer({ id: 'plants-pulse', type: 'circle', source: 'plants',
           filter: ['==', ['get', 'has_temporal'], true],
           paint: {
-            'circle-radius': 14,
+            'circle-radius': 10,
             'circle-color': 'transparent',
-            'circle-stroke-width': 1.5,
-            'circle-stroke-color': '#f5c542',
-            'circle-stroke-opacity': 0.6,
+            'circle-stroke-width': 2,
+            'circle-stroke-color': '#FFE000',
+            'circle-stroke-opacity': 0.9,
           }
         })
+
+        // Animate pulse radius
+        let pulseSize = 10
+        let growing = true
+        setInterval(() => {
+          if (growing) { pulseSize += 0.4; if (pulseSize >= 18) growing = false }
+          else         { pulseSize -= 0.4; if (pulseSize <= 10) growing = true  }
+          if (m.getLayer('plants-pulse')) {
+            m.setPaintProperty('plants-pulse', 'circle-radius', pulseSize)
+            m.setPaintProperty('plants-pulse', 'circle-stroke-opacity', 
+              0.9 * (1 - (pulseSize - 10) / 8))
+          }
+        }, 30)
 
         m.addLayer({ id: 'plants-layer', type: 'circle', source: 'plants',
           paint: {
@@ -128,8 +141,8 @@ export default function Home() {
             ...f,
             properties: {
               ...f.properties,
-              dot_color: gwpColor(f.properties.has_temporal, f.properties.latest_gwp !== null),
-              dot_size: f.properties.has_temporal ? 8 : f.properties.latest_gwp !== null ? 6 : 4,
+              dot_color: gwpColor(f.properties.has_temporal === true, f.properties.latest_gwp !== null),
+              dot_size: f.properties.has_temporal === true ? 8 : f.properties.latest_gwp !== null ? 6 : 4,
               has_temporal: f.properties.has_temporal,
             }
           }))
