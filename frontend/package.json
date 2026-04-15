@@ -16,6 +16,7 @@
     "d3": "^7.9.0",
     "mapbox-gl": "^3.1.2",
     "next": "^16.2.3",
+    "pg": "^8.20.0",
     "react": "^18",
     "react-dom": "^18",
     "swr": "^2.2.4"
@@ -25,6 +26,7 @@
     "@types/d3": "^7.4.3",
     "@types/mapbox-gl": "^3.1.0",
     "@types/node": "^20",
+    "@types/pg": "^8.20.0",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
