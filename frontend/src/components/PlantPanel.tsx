@@ -213,14 +213,6 @@ export default function PlantPanel({ plant, onClose }: Props) {
     return 'var(--red)'
   }
 
-  const trendLabel = (pct: number | null) => {
-    if (pct === null) return 'No trend data'
-    if (pct < -10) return 'Strong improvement'
-    if (pct < 0)   return 'Improving'
-    if (pct < 5)   return 'Stable'
-    return 'Worsening'
-  }
-
   return (
     <div className="flex flex-col h-full overflow-hidden">
 
@@ -285,15 +277,6 @@ export default function PlantPanel({ plant, onClose }: Props) {
                 </div>
               </div>
             )}
-            <div className="ml-auto text-right">
-              <div className="font-mono text-xs"
-                   style={{ color: trendColor(plant.gwp_pct_change), fontSize: '10px' }}>
-                {trendLabel(plant.gwp_pct_change)}
-              </div>
-              <div className="font-mono text-muted" style={{ fontSize: '9px' }}>
-                {plant.egrid_subregion}
-              </div>
-            </div>
           </div>
         )}
       </div>

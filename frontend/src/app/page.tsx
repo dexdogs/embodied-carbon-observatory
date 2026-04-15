@@ -28,6 +28,62 @@ export default function Home() {
   const [requestCount, setRequestCount]         = useState(0)
   const [singleEpdCount, setSingleEpdCount]     = useState(0)
   const [mapReady, setMapReady]                 = useState(false)
+  const mapboxglRef = useRef<any>(null)
+  const popupRef = useRef<any>(null)
+
+  const closePlantPopup = useCallback(() => {
+    if (popupRef.current) {
+      popupRef.current.remove()
+      popupRef.current = null
+    }
+  }, [])
+
+  const showPlantPopup = useCallback(async (plant: any, coords: [number, number]) => {
+    if (!map.current || !mapboxglRef.current) return
+
+    try {
+      const [details, attribution] = await Promise.all([
+        api.getPlant(plant.id),
+        api.getAttribution(plant.id),
+      ])
+
+      const overall = attribution.summary?.avg_pct_change ?? attribution.attributions?.[0]?.pct_change_total ?? null
+      const grid = attribution.summary?.avg_pct_from_grid ?? attribution.attributions?.[0]?.pct_from_grid ?? null
+      const process = attribution.summary?.avg_pct_from_process ?? attribution.attributions?.[0]?.pct_from_process ?? null
+      const periods = attribution.attributions?.length ?? 0
+      const address = details.address || `${details.city || ''}${details.city && details.state ? ', ' : ''}${details.state || ''}`
+
+      const html = `
+        <div style="font-family: IBM Plex Mono, monospace; color: #f5f5f5; font-size: 12px; line-height: 1.4; padding: 10px; max-width: 240px;">
+          <div style="font-weight: 700; margin-bottom: 6px;">${plant.name}</div>
+          <div style="color: #8a98a4; font-size: 11px; margin-bottom: 10px;">${address}</div>
+          <div style="font-size: 11px; color: #8a98a4; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.08em;">Overall</div>
+          <div style="font-weight: 700; font-size: 14px; margin-bottom: 8px;">${overall !== null ? `${overall > 0 ? '+' : ''}${overall.toFixed(1)}%` : '—'}</div>
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 4px 8px; font-size: 11px;">
+            <span style="color: #8a98a4;">Grid driven</span><span style="font-weight: 700;">${grid !== null ? `${grid > 0 ? '+' : ''}${grid.toFixed(1)}%` : '—'}</span>
+            <span style="color: #8a98a4;">Process driven</span><span style="font-weight: 700;">${process !== null ? `${process > 0 ? '+' : ''}${process.toFixed(1)}%` : '—'}</span>
+            <span style="color: #8a98a4;">Periods</span><span style="font-weight: 700;">${periods}</span>
+          </div>
+        </div>
+      `
+
+      closePlantPopup()
+      popupRef.current = new mapboxglRef.current.Popup({ closeButton: false, closeOnClick: false, offset: 15 })
+        .setLngLat(coords)
+        .setHTML(html)
+        .addTo(map.current)
+    } catch (error) {
+      console.error('Failed to load plant popup data:', error)
+    }
+  }, [closePlantPopup])
+
+  const handlePlantSelect = useCallback(async (plant: any, coords: [number, number]) => {
+    setSelectedPlant(plant)
+    if (map.current) {
+      map.current.setFilter('plants-selected', ['==', ['get', 'id'], plant.id])
+    }
+    await showPlantPopup(plant, coords)
+  }, [showPlantPopup])
 
   // Init map
   useEffect(() => {
@@ -37,6 +93,7 @@ export default function Home() {
       const mapboxgl = (await import('mapbox-gl')).default
       await import('mapbox-gl/dist/mapbox-gl.css')
       mapboxgl.accessToken = MAPBOX_TOKEN
+      mapboxglRef.current = mapboxgl
 
       const m = new mapboxgl.Map({
         container: mapContainer.current!,
@@ -105,8 +162,7 @@ export default function Home() {
           if (!e.features?.[0]) return
           const p = e.features[0].properties as Plant
           const coords = (e.features[0].geometry as any).coordinates
-          setSelectedPlant(p)
-          m.setFilter('plants-selected', ['==', ['get', 'id'], p.id])
+          handlePlantSelect(p, coords)
           m.flyTo({ center: coords, zoom: Math.max(m.getZoom(), 8), duration: 800 })
         })
 
@@ -115,6 +171,7 @@ export default function Home() {
           if (f.length === 0) {
             setSelectedPlant(null)
             m.setFilter('plants-selected', ['==', ['get', 'id'], ''])
+            closePlantPopup()
           }
         })
 
@@ -173,9 +230,8 @@ export default function Home() {
 
   const handleSearchResult = useCallback((plant: Plant) => {
     map.current?.flyTo({ center: [plant.lng, plant.lat], zoom: 10, duration: 1200 })
-    setSelectedPlant(plant)
-    map.current?.setFilter('plants-selected', ['==', ['get', 'id'], plant.id])
-  }, [])
+    handlePlantSelect(plant, [plant.lng, plant.lat])
+  }, [handlePlantSelect])
 
   return (
     <main style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden", background: "#080f0f" }}>

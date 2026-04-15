@@ -44,6 +44,12 @@ export default function SearchBar({ onResult }: Props) {
     onResult(plant)
   }
 
+  const handleKeyDown = (e: any) => {
+    if (e.key === 'Enter' && results.length > 0) {
+      handleSelect(results[0])
+    }
+  }
+
   const gwpColor = (pct: number | null) => {
     if (pct === null) return '#4a7070'
     if (pct < 0) return '#00e5c8'
@@ -65,6 +71,7 @@ export default function SearchBar({ onResult }: Props) {
           type="text"
           value={query}
           onChange={e => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder="Search plants or manufacturers..."
           className="w-full bg-transparent pl-8 pr-3 py-2.5 text-text placeholder-muted outline-none font-mono text-xs"
           style={{ fontSize: '12px' }}
