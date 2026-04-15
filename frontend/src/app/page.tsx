@@ -6,6 +6,7 @@ import { Plant } from '@/types'
 import SearchBar from '@/components/SearchBar'
 import FilterBar from '@/components/FilterBar'
 import PlantPanel from '@/components/PlantPanel'
+import InfoFeedback from '@/components/InfoFeedback'
 import { InsightsBanner, Legend } from '@/components/InsightsBanner'
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ''
@@ -196,9 +197,12 @@ export default function Home() {
         />
       </div>
 
-      {/* Legend */}
+      {/* Legend and Info */}
       <div className="absolute bottom-8 right-4 z-10">
         <Legend />
+      </div>
+      <div className="absolute bottom-8 left-4 z-10">
+        <InfoFeedback />
       </div>
 
       {/* Plant panel */}
