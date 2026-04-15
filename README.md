@@ -96,19 +96,6 @@ Strong improvement of −73.4% between 2019 and 2020, with both grid and process
 
 ---
 
----
-
-## Current Data Status
-
-- **US plants indexed:** 2,750
-- **Total EPDs:** ~54,000
-- **Plants with temporal data (2+ years):** 25
-- **Grid records:** 161 (eGRID 2018–2023, 27 subregions)
-- **Attribution pairs computed:** 11
-- **Material focus:** Concrete (ready-mix)
-
----
-
 ## Data Attribution
 
 EPD data sourced from the [EC3 platform](https://buildingtransparency.org) by Building Transparency under their public API terms. Grid emission data from the [EPA eGRID program](https://www.epa.gov/egrid). Supply chain background data from the [Federal LCA Commons](https://www.lcacommons.gov).
