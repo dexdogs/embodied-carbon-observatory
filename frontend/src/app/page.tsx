@@ -172,8 +172,8 @@ export default function Home() {
            style={{ background: 'linear-gradient(180deg, rgba(8,15,15,0.95) 0%, transparent 100%)' }}>
         <div className="flex items-center justify-between px-4 py-3">
           <div className="pointer-events-auto">
-            <h1 className="font-display text-text text-lg leading-none">Embodied Carbon Observatory</h1>
-            <p className="font-mono text-muted text-xs mt-1 tracking-wider uppercase">US Building Materials · Temporal GWP Analysis</p>
+            <h1 className="font-display text-text text-lg leading-none brand-text">Embodied Carbon Observatory // dexdogs</h1>
+            <p className="font-mono text-muted text-xs mt-1 tracking-wider uppercase brand-text">US Building Materials · Temporal GWP Analysis</p>
           </div>
           <div className="font-mono text-xs text-muted">
             {plantCount > 0 && <span><span className="text-teal">{plantCount.toLocaleString()}</span> plants</span>}
