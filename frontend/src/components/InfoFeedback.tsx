@@ -84,24 +84,44 @@ export default function InfoFeedback() {
           <p className="text-text leading-relaxed mb-3">
             Have questions or ideas? Get in touch with the team.
           </p>
-          <a
-            href="mailto:ankur@dexdogs.earth"
-            className="inline-block px-2 py-1 rounded text-xs font-mono transition-colors"
-            style={{
-              background: 'rgba(0,229,200,0.1)',
-              color: 'var(--teal)',
-              border: '1px solid var(--teal)',
-              textDecoration: 'none',
-            }}
-            onMouseEnter={(e) => {
-              (e.target as HTMLElement).style.background = 'rgba(0,229,200,0.2)'
-            }}
-            onMouseLeave={(e) => {
-              (e.target as HTMLElement).style.background = 'rgba(0,229,200,0.1)'
-            }}
-          >
-            ankur@dexdogs.earth →
-          </a>
+          <div className="flex flex-col gap-2">
+            <a
+              href="mailto:ankur@dexdogs.earth"
+              className="inline-block px-2 py-1 rounded text-xs font-mono transition-colors"
+              style={{
+                background: 'rgba(0,229,200,0.1)',
+                color: 'var(--teal)',
+                border: '1px solid var(--teal)',
+                textDecoration: 'none',
+              }}
+              onMouseEnter={(e) => {
+                (e.target as HTMLElement).style.background = 'rgba(0,229,200,0.2)'
+              }}
+              onMouseLeave={(e) => {
+                (e.target as HTMLElement).style.background = 'rgba(0,229,200,0.1)'
+              }}
+            >
+              Feedback →
+            </a>
+            <a
+              href="mailto:ankur@dexdogs.earth?subject=Request%20Access%20to%20Plant%20Data&body=Hi%20Ankur%2C%0A%0AI%20would%20like%20to%20request%20access%20to%20indexed%20plant%20data%20in%20the%20Embodied%20Carbon%20Observatory."
+              className="inline-block px-2 py-1 rounded text-xs font-mono transition-colors"
+              style={{
+                background: 'rgba(0,229,200,0.1)',
+                color: 'var(--teal)',
+                border: '1px solid var(--teal)',
+                textDecoration: 'none',
+              }}
+              onMouseEnter={(e) => {
+                (e.target as HTMLElement).style.background = 'rgba(0,229,200,0.2)'
+              }}
+              onMouseLeave={(e) => {
+                (e.target as HTMLElement).style.background = 'rgba(0,229,200,0.1)'
+              }}
+            >
+              Request Access →
+            </a>
+          </div>
         </div>
       )}
     </div>

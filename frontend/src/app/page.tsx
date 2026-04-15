@@ -57,11 +57,11 @@ export default function Home() {
         <div style="font-family: IBM Plex Mono, monospace; color: #f5f5f5; font-size: 12px; line-height: 1.4; padding: 10px; max-width: 240px;">
           <div style="font-weight: 700; margin-bottom: 6px;">${plant.name}</div>
           <div style="color: #8a98a4; font-size: 11px; margin-bottom: 10px;">${address}</div>
-          <div style="font-size: 11px; color: #8a98a4; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.08em;">Overall</div>
-          <div style="font-weight: 700; font-size: 14px; margin-bottom: 8px;">${overall !== null ? `${overall > 0 ? '+' : ''}${overall.toFixed(1)}%` : '—'}</div>
+          <div style="font-size: 11px; color: #8a98a4; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.08em;">Overall GWP change</div>
+          <div style="font-weight: 700; font-size: 14px; margin-bottom: 8px;">${overall !== null ? `${overall > 0 ? '+' : ''}${overall.toFixed(1)}%` : 'Request Access'}</div>
           <div style="display: grid; grid-template-columns: 1fr auto; gap: 4px 8px; font-size: 11px;">
-            <span style="color: #8a98a4;">Grid driven</span><span style="font-weight: 700;">${grid !== null ? `${grid > 0 ? '+' : ''}${grid.toFixed(1)}%` : '—'}</span>
-            <span style="color: #8a98a4;">Process driven</span><span style="font-weight: 700;">${process !== null ? `${process > 0 ? '+' : ''}${process.toFixed(1)}%` : '—'}</span>
+            <span style="color: #8a98a4;">Grid driven</span><span style="font-weight: 700;">${grid !== null ? `${grid > 0 ? '+' : ''}${grid.toFixed(1)}%` : 'Request Access'}</span>
+            <span style="color: #8a98a4;">Process driven</span><span style="font-weight: 700;">${process !== null ? `${process > 0 ? '+' : ''}${process.toFixed(1)}%` : 'Request Access'}</span>
             <span style="color: #8a98a4;">Periods</span><span style="font-weight: 700;">${periods}</span>
           </div>
         </div>
