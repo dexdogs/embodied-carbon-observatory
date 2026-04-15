@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   const lat = s.get('lat') ? parseFloat(s.get('lat')!) : null
   const lng = s.get('lng') ? parseFloat(s.get('lng')!) : null
 
-  const conditions = ['p.lat IS NOT NULL', 'p.lng IS NOT NULL']
+  const conditions = ['p.lat IS NOT NULL', 'p.lng IS NOT NULL', "p.state IS NOT NULL", "p.state != ''", "p.egrid_subregion != 'UNKNOWN'"]
   const params: any[] = []
 
   if (category) { params.push(category.toLowerCase()); conditions.push(`p.material_category = $${params.length}`) }
