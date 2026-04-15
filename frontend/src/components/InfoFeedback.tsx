@@ -31,7 +31,7 @@ export default function InfoFeedback() {
         <span>&#9993;</span> Feedback
       </button>
 
-      
+      <a
         href="mailto:ankur@dexdogs.earth?subject=Request%20Access%20to%20Plant%20Data&body=Hi%20Ankur%2C%0A%0AI%20would%20like%20to%20request%20access%20to%20indexed%20plant%20data%20in%20the%20Embodied%20Carbon%20Observatory."
         className="flex items-center gap-2 px-3 py-2 text-xs font-mono rounded transition-colors"
         style={{
@@ -85,7 +85,7 @@ export default function InfoFeedback() {
             </p>
           </div>
 
-          
+          <a
             href="https://dexdogs.earth"
             target="_blank"
             rel="noopener noreferrer"
@@ -106,7 +106,7 @@ export default function InfoFeedback() {
         >
           <p className="font-mono text-muted mb-2 tracking-wide uppercase" style={{ fontSize: '9px' }}>Send Feedback</p>
           <p className="text-text leading-relaxed mb-3">Have questions or ideas? Get in touch with the team.</p>
-          
+          <a
             href="mailto:ankur@dexdogs.earth"
             className="inline-block px-2 py-1 rounded text-xs font-mono"
             style={{ background: 'rgba(0,229,200,0.1)', color: 'var(--teal)', border: '1px solid var(--teal)', textDecoration: 'none' }}
