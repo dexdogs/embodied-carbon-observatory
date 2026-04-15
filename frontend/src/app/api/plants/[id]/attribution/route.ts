@@ -18,9 +18,9 @@ export async function GET(_: NextRequest, { params: paramsPromise }: { params: P
     FROM gwp_attribution a WHERE a.plant_id = $1::uuid ORDER BY a.period_end ASC
   `, [id])
   const summary = await queryOne(`
-    SELECT ROUND(AVG(pct_change_total)::numeric,1) AS avg_pct_change,
-      ROUND(AVG(pct_from_grid)::numeric,1) AS avg_pct_from_grid,
-      ROUND(AVG(pct_from_process)::numeric,1) AS avg_pct_from_process,
+    SELECT ROUND(AVG(pct_change_total)::numeric,1)::float AS avg_pct_change,
+      ROUND(AVG(pct_from_grid)::numeric,1)::float AS avg_pct_from_grid,
+      ROUND(AVG(pct_from_process)::numeric,1)::float AS avg_pct_from_process,
       COUNT(*) AS periods_analyzed
     FROM gwp_attribution WHERE plant_id = $1::uuid
   `, [id])
