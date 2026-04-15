@@ -346,6 +346,16 @@ export default function PlantPanel({ plant, onClose }: Props) {
                 <span className="ml-2 text-amber">— grid intensity</span>
               </div>
               <svg ref={chartRef} className="w-full" />
+              {history.version_count === 1 && (
+                <div className="mt-2 font-mono text-[11px] text-muted leading-snug">
+                  Only one EPD is available for this plant, so the trend is shown as a single data point.
+                </div>
+              )}
+              {history.epd_versions?.every((v: EPDVersion) => v.grid_co2e_at_issue == null) && (
+                <div className="mt-2 font-mono text-[11px] text-muted leading-snug">
+                  Grid intensity overlay is unavailable for this plant or year.
+                </div>
+              )}
             </div>
 
             {/* EPD version list */}
