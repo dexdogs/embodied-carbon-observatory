@@ -11,7 +11,7 @@ import { InsightsBanner, Legend } from '@/components/InsightsBanner'
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ''
 
 function gwpColor(hasTemporal: boolean, hasEPD: boolean): string {
-  if (hasTemporal) return '#FFE000'   // yellow — multi-year temporal data
+  if (hasTemporal) return '#FFFF00'   // yellow — multi-year temporal data
   if (hasEPD)      return '#4a9e6b'   // light green — has EPDs but single year
   return '#6b6b6b'                     // gray — not yet indexed
 }
@@ -82,9 +82,9 @@ export default function Home() {
           paint: {
             'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, ['get', 'dot_size'], 10, ['*', ['get', 'dot_size'], 1.8]],
             'circle-color': ['get', 'dot_color'],
-            'circle-opacity': 0.9,
-            'circle-stroke-width': 0.5,
-            'circle-stroke-color': 'rgba(255,255,255,0.2)',
+            'circle-opacity': 1.0,
+            'circle-stroke-width': 1.5,
+            'circle-stroke-color': 'rgba(255,255,255,0.5)',
           }
         })
 

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query, queryOne } from '../../../db'
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
-  const plant = await queryOne('SELECT id, name, material_category, egrid_subregion FROM plants WHERE id = $1::uuid', [params.id])
+export async function GET(_: NextRequest, { params: paramsPromise }: { params: Promise<{ id: string }> }) {
+  const { id } = await paramsPromise
+  const plant = await queryOne('SELECT id, name, material_category, egrid_subregion FROM plants WHERE id = $1::uuid', [id])
   if (!plant) return NextResponse.json({ detail: 'Not found' }, { status: 404 })
   const versions = await query(`
     SELECT e.id::text, e.ec3_epd_id, e.issued_at, e.gwp_total, e.gwp_fossil,
@@ -14,6 +15,6 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
       AND EXTRACT(year FROM g.year) = EXTRACT(year FROM e.issued_at)
     WHERE e.plant_id = $1::uuid AND e.gwp_total IS NOT NULL
     ORDER BY e.issued_at ASC
-  `, [params.id])
-  return NextResponse.json({ plant_id: params.id, plant_name: plant.name, material_category: plant.material_category, epd_versions: versions, version_count: versions.length })
+  `, [id])
+  return NextResponse.json({ plant_id: id, plant_name: plant.name, material_category: plant.material_category, epd_versions: versions, version_count: versions.length })
 }

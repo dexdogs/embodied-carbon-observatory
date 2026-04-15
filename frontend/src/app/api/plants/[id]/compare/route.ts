@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query, queryOne } from '../../../db'
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params: paramsPromise }: { params: Promise<{ id: string }> }) {
+  const { id } = await paramsPromise
   const radius_miles = parseFloat(req.nextUrl.searchParams.get('radius_miles') || '200')
-  const plant = await queryOne('SELECT id, name, material_category, lat, lng FROM plants WHERE id = $1::uuid', [params.id])
+  const plant = await queryOne('SELECT id, name, material_category, lat, lng FROM plants WHERE id = $1::uuid', [id])
   if (!plant) return NextResponse.json({ detail: 'Not found' }, { status: 404 })
   const radius_meters = radius_miles * 1609.34
   const alternatives = await query(`
@@ -16,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       AND ST_DWithin(p.location::geography,ST_MakePoint($1,$2)::geography,$5)
       AND gd.avg_gwp IS NOT NULL
     ORDER BY gd.avg_gwp ASC LIMIT 5
-  `, [plant.lng, plant.lat, plant.material_category, params.id, radius_meters])
-  const ref = await queryOne('SELECT avg_gwp FROM gwp_deltas WHERE plant_id=$1::uuid ORDER BY period DESC LIMIT 1', [params.id])
-  return NextResponse.json({ reference_plant: { id: params.id, name: plant.name, latest_gwp: ref?.avg_gwp }, alternatives, radius_miles })
+  `, [plant.lng, plant.lat, plant.material_category, id, radius_meters])
+  const ref = await queryOne('SELECT avg_gwp FROM gwp_deltas WHERE plant_id=$1::uuid ORDER BY period DESC LIMIT 1', [id])
+  return NextResponse.json({ reference_plant: { id: id, name: plant.name, latest_gwp: ref?.avg_gwp }, alternatives, radius_miles })
 }

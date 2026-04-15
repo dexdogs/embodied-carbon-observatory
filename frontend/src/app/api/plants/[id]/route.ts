@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { queryOne } from '../../db'
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_: NextRequest, { params: paramsPromise }: { params: Promise<{ id: string }> }) {
+  const { id } = await paramsPromise
   const plant = await queryOne(`
     SELECT p.id::text, p.name, p.manufacturer, p.address, p.city, p.state,
       p.zip, p.lat, p.lng, p.egrid_subregion, p.material_category,
@@ -9,7 +10,7 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
       MIN(e.issued_at) AS first_epd_date, MAX(e.issued_at) AS latest_epd_date
     FROM plants p LEFT JOIN epd_versions e ON e.plant_id = p.id
     WHERE p.id = $1::uuid GROUP BY p.id
-  `, [params.id])
+  `, [id])
   if (!plant) return NextResponse.json({ detail: 'Not found' }, { status: 404 })
   return NextResponse.json(plant)
 }
