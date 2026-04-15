@@ -166,7 +166,7 @@ def get_plants(
     If lat/lng provided, returns plants within radius ordered by distance.
     Each feature includes GWP trend metadata for map dot sizing/coloring.
     """
-    conditions = ["p.lat IS NOT NULL", "p.lng IS NOT NULL", "p.state IS NOT NULL", "p.state != ''"]
+    conditions = ["p.lat IS NOT NULL", "p.lng IS NOT NULL"]
     params     = []
 
     if category:
@@ -246,7 +246,7 @@ def get_plants(
             LIMIT 1
         ) a ON TRUE
         {where}
-        ORDER BY {distance_order}
+        ORDER BY gd.avg_gwp IS NULL ASC, {distance_order}
         LIMIT %s;
     """
     params.append(limit)
@@ -849,3 +849,4 @@ def get_grid_history(subregion: str):
         "subregion": subregion.upper(),
         "history":   records,
     }
+# reorder Wed Apr 15 13:32:15 UTC 2026
