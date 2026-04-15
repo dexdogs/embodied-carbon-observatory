@@ -33,6 +33,28 @@ export default function InfoFeedback() {
         <span>✉</span> Feedback
       </button>
 
+      {/* Request Access Button */}
+      <a
+        href="mailto:ankur@dexdogs.earth?subject=Request%20Access%20to%20Plant%20Data&body=Hi%20Ankur%2C%0A%0AI%20would%20like%20to%20request%20access%20to%20indexed%20plant%20data%20in%20the%20Embodied%20Carbon%20Observatory."
+        className="flex items-center gap-2 px-3 py-2 text-xs font-mono rounded transition-colors"
+        style={{
+          background: 'var(--surface)',
+          color: 'var(--text)',
+          border: '1px solid var(--border)',
+          textDecoration: 'none',
+        }}
+        onMouseEnter={(e: any) => {
+          e.target.style.background = 'rgba(0,229,200,0.1)';
+          e.target.style.color = 'var(--teal)';
+        }}
+        onMouseLeave={(e: any) => {
+          e.target.style.background = 'var(--surface)';
+          e.target.style.color = 'var(--text)';
+        }}
+      >
+        <span>🔐</span> Request Access
+      </a>
+
       {/* Info Panel */}
       {activeTab === 'info' && (
         <div
@@ -84,44 +106,24 @@ export default function InfoFeedback() {
           <p className="text-text leading-relaxed mb-3">
             Have questions or ideas? Get in touch with the team.
           </p>
-          <div className="flex flex-col gap-2">
-            <a
-              href="mailto:ankur@dexdogs.earth"
-              className="inline-block px-2 py-1 rounded text-xs font-mono transition-colors"
-              style={{
-                background: 'rgba(0,229,200,0.1)',
-                color: 'var(--teal)',
-                border: '1px solid var(--teal)',
-                textDecoration: 'none',
-              }}
-              onMouseEnter={(e) => {
-                (e.target as HTMLElement).style.background = 'rgba(0,229,200,0.2)'
-              }}
-              onMouseLeave={(e) => {
-                (e.target as HTMLElement).style.background = 'rgba(0,229,200,0.1)'
-              }}
-            >
-              Feedback →
-            </a>
-            <a
-              href="mailto:ankur@dexdogs.earth?subject=Request%20Access%20to%20Plant%20Data&body=Hi%20Ankur%2C%0A%0AI%20would%20like%20to%20request%20access%20to%20indexed%20plant%20data%20in%20the%20Embodied%20Carbon%20Observatory."
-              className="inline-block px-2 py-1 rounded text-xs font-mono transition-colors"
-              style={{
-                background: 'rgba(0,229,200,0.1)',
-                color: 'var(--teal)',
-                border: '1px solid var(--teal)',
-                textDecoration: 'none',
-              }}
-              onMouseEnter={(e) => {
-                (e.target as HTMLElement).style.background = 'rgba(0,229,200,0.2)'
-              }}
-              onMouseLeave={(e) => {
-                (e.target as HTMLElement).style.background = 'rgba(0,229,200,0.1)'
-              }}
-            >
-              Request Access →
-            </a>
-          </div>
+          <a
+            href="mailto:ankur@dexdogs.earth"
+            className="inline-block px-2 py-1 rounded text-xs font-mono transition-colors"
+            style={{
+              background: 'rgba(0,229,200,0.1)',
+              color: 'var(--teal)',
+              border: '1px solid var(--teal)',
+              textDecoration: 'none',
+            }}
+            onMouseEnter={(e) => {
+              (e.target as HTMLElement).style.background = 'rgba(0,229,200,0.2)'
+            }}
+            onMouseLeave={(e) => {
+              (e.target as HTMLElement).style.background = 'rgba(0,229,200,0.1)'
+            }}
+          >
+            Send Feedback →
+          </a>
         </div>
       )}
     </div>

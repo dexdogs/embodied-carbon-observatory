@@ -62,7 +62,7 @@ export default function Home() {
           <div style="display: grid; grid-template-columns: 1fr auto; gap: 4px 8px; font-size: 11px;">
             <span style="color: #8a98a4;">Grid driven</span><span style="font-weight: 700;">${grid !== null ? `${grid > 0 ? '+' : ''}${grid.toFixed(1)}%` : 'Request Access'}</span>
             <span style="color: #8a98a4;">Process driven</span><span style="font-weight: 700;">${process !== null ? `${process > 0 ? '+' : ''}${process.toFixed(1)}%` : 'Request Access'}</span>
-            <span style="color: #8a98a4;">Periods</span><span style="font-weight: 700;">${periods}</span>
+            <span style="color: #8a98a4;">Periods</span><span style="font-weight: 700;">${periods > 0 ? periods : 'Request Access'}</span>
           </div>
         </div>
       `
