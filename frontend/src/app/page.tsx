@@ -196,11 +196,6 @@ export default function Home() {
         />
       </div>
 
-      {/* Insights */}
-      <div className="absolute bottom-8 left-4 z-10 w-72">
-        <InsightsBanner category={selectedCategory} />
-      </div>
-
       {/* Legend */}
       <div className="absolute bottom-8 right-4 z-10">
         <Legend />

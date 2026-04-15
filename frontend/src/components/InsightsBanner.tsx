@@ -107,14 +107,7 @@ export function Legend() {
           </div>
         ))}
       </div>
-      <div className="mt-2 pt-2" style={{ borderTop: '1px solid var(--border)' }}>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-0 border-t border-dashed" style={{ borderColor: '#00e5c8' }} />
-          <span className="font-mono text-muted" style={{ fontSize: '9px' }}>
-            Supply chain edge
-          </span>
-        </div>
-      </div>
+
     </div>
   )
 }
