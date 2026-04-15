@@ -646,7 +646,8 @@ def ingest_epds(
     conn,
     plant_ids: dict,
     category: str = None,
-    dry_run: bool = False
+    dry_run: bool = False,
+    plant_id_filter: str = None
 ) -> dict:
     """
     Ingest all EPD versions from EC3.
@@ -680,13 +681,13 @@ def ingest_epds(
 
     for cat in categories:
         log.info(f"Fetching EPDs for category: {cat}")
-
         for raw_epd in tqdm(
-            client.get_epds(category=cat, include_expired=True),
+            client.get_epds(category=cat, include_expired=True, plant_id=plant_id_filter),
             desc=f"EPDs ({cat})",
             unit="epd"
         ):
             stats["total_fetched"] += 1
+
 
             # Find the plant this EPD belongs to
             plant_ref = (raw_epd.get("plants") or [{}])[0]
@@ -824,6 +825,12 @@ def main():
         action="store_true",
         help="Only ingest EPDs (plants must already exist in DB)"
     )
+    parser.add_argument(
+        "--plant-id",
+        type=str,
+        default=None,
+        help="Ingest EPDs for a specific EC3 plant ID only"
+    )
     args = parser.parse_args()
 
     log.info("=" * 60)
@@ -857,7 +864,8 @@ def main():
             ingest_epds(
                 client, conn, plant_ids,
                 category=args.category,
-                dry_run=args.dry_run
+                dry_run=args.dry_run,
+                plant_id_filter=args.plant_id
             )
 
         if not args.dry_run:
