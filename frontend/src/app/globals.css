@@ -133,3 +133,161 @@ html, body {
   70%  { opacity: 0;   transform: scale(1.4); }
   100% { opacity: 0;   transform: scale(1.4); }
 }
+
+/* ───────────────────────────────────────────────────────────────
+   MOBILE OVERRIDES (≤ 768px)
+   Everything inside this media query only applies on mobile.
+   Desktop rendering is untouched.
+   ─────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+
+  html, body {
+    -webkit-text-size-adjust: 100%;
+    overscroll-behavior: none;
+  }
+
+  /* ---- HEADER: compact title row ---- */
+  main > .absolute.top-0.left-0.right-0 > .flex.items-center.justify-between {
+    padding: 8px 12px !important;
+  }
+  main > .absolute.top-0.left-0.right-0 h1.brand-text {
+    font-size: 13px !important;
+    line-height: 1.1 !important;
+  }
+  main > .absolute.top-0.left-0.right-0 p.brand-text {
+    font-size: 8.5px !important;
+    margin-top: 2px !important;
+    letter-spacing: 0.06em !important;
+  }
+  main > .absolute.top-0.left-0.right-0 .font-mono.text-xs.text-muted {
+    font-size: 10px !important;
+    white-space: nowrap;
+  }
+
+  /* ---- SEARCH BAR: full-width under header ---- */
+  main > .absolute.top-16.left-4.w-72 {
+    top: 52px !important;
+    left: 10px !important;
+    right: 10px !important;
+    width: auto !important;
+  }
+  main > .absolute.top-16.left-4.w-72 input {
+    font-size: 14px !important;  /* 14px+ prevents iOS zoom-on-focus */
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+
+  /* ---- FILTER BAR: row 2, horizontal scroll ---- */
+  main > .absolute.top-16.left-80 {
+    top: 104px !important;
+    left: 10px !important;
+    right: 10px !important;
+  }
+  main > .absolute.top-16.left-80 > .flex {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 2px 0 4px 0;
+    mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 18px), transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 18px), transparent 100%);
+  }
+  main > .absolute.top-16.left-80 > .flex::-webkit-scrollbar { display: none; }
+  main > .absolute.top-16.left-80 > .flex > button,
+  main > .absolute.top-16.left-80 > .flex > select {
+    flex-shrink: 0;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  /* ---- PLANT PANEL: bottom sheet ---- */
+  main > .absolute.top-0.right-0.bottom-0.w-96 {
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    height: 82vh !important;
+    border-left: none !important;
+    border-top: 1px solid var(--border) !important;
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.55);
+    animation: mobileSheetUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  /* Grab handle at top of sheet */
+  main > .absolute.top-0.right-0.bottom-0.w-96::before {
+    content: '';
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 42px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    z-index: 30;
+    pointer-events: none;
+  }
+  /* Push the panel's inner header down a bit so the handle has room */
+  main > .absolute.top-0.right-0.bottom-0.w-96 > .flex.flex-col > .flex-shrink-0:first-child {
+    padding-top: 18px !important;
+  }
+  /* Make the close button easier to tap */
+  main > .absolute.top-0.right-0.bottom-0.w-96 button[class*="flex-shrink-0"] svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  /* ---- BOTTOM LEFT (MapSummary + Info/Feedback buttons) ---- */
+  main > .absolute.bottom-8.left-4 {
+    bottom: 10px !important;
+    left: 10px !important;
+    right: 10px !important;
+  }
+  main > .absolute.bottom-8.left-4 > .panel {
+    min-width: 0 !important;
+    padding: 10px !important;
+  }
+  /* Info & Feedback buttons — row layout on mobile to save vertical space */
+  main > .absolute.bottom-8.left-4 > .flex.flex-col.gap-2 {
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    gap: 6px !important;
+  }
+  main > .absolute.bottom-8.left-4 > .flex.flex-col.gap-2 > button,
+  main > .absolute.bottom-8.left-4 > .flex.flex-col.gap-2 > a {
+    flex: 0 0 auto;
+    padding: 8px 10px !important;
+  }
+  /* Info popover — constrain within viewport */
+  main > .absolute.bottom-8.left-4 > .flex.flex-col.gap-2 > div.p-3.rounded {
+    max-width: calc(100vw - 24px) !important;
+    width: 100%;
+    max-height: 60vh !important;
+  }
+
+  /* ---- LEGEND: hidden on mobile (color meaning already conveyed in panels) ---- */
+  main > .absolute.bottom-8.right-4 {
+    display: none !important;
+  }
+
+  /* ---- MAPBOX popup: keep readable within small viewports ---- */
+  .mapboxgl-popup {
+    max-width: calc(100vw - 32px) !important;
+  }
+  .mapboxgl-popup-content {
+    font-size: 12px;
+  }
+
+  /* ---- PlantPanel tab bar: taller tap targets ---- */
+  main > .absolute.top-0.right-0.bottom-0.w-96 .flex-shrink-0.flex > button {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+}
+
+@keyframes mobileSheetUp {
+  from { transform: translateY(100%); opacity: 0.6; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
