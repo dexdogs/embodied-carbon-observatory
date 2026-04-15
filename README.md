@@ -47,21 +47,6 @@ This decomposition reveals whether a plant's trajectory is driven by external gr
 
 ---
 
-## Demo Plants
-
-Three plants illustrate the core analytical stories:
-
-**Boston Sand & Gravel** (Charlestown, MA — NEWE grid)
-Concrete producer with EPDs from 2018–2021. New England's grid is relatively clean and stable, so the attribution model shows this plant's GWP changes are almost entirely process-driven — the grid provides negligible tailwind. A mixed story: improvement in 2019–2020 followed by deterioration in 2020–2021.
-
-**Queens Lane (dry)** (San Jose, CA — CAMX grid)
-Central Concrete facility with EPDs from 2019–2020. GWP increased +49.5% over this period. The attribution model shows this is predominantly process-driven deterioration — the California grid was actually getting cleaner, providing a headwind that masked an even worse underlying process trend.
-
-**Oakland** (Oakland, CA — CAMX grid)
-Strong improvement of −73.4% between 2019 and 2020, with both grid and process contributing. California's accelerating renewable penetration (CAMX) accounts for a meaningful share of this improvement.
-
----
-
 ## Datasets
 
 | Dataset | Source | Coverage | Use |
