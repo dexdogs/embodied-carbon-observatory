@@ -63,8 +63,15 @@ export default function PlantPanel({ plant, onClose }: Props) {
 
     const g = svg.append('g').attr('transform', `translate(${mg.left},${mg.top})`)
 
+    const dates = versions.map(d => new Date(d.issued_at))
+    let xDomain = d3.extent(dates) as [Date, Date]
+    if (xDomain[0].getTime() === xDomain[1].getTime()) {
+      const t = xDomain[0].getTime()
+      xDomain = [new Date(t - 1000 * 60 * 60 * 24 * 30), new Date(t + 1000 * 60 * 60 * 24 * 30)]
+    }
+
     const x = d3.scaleTime()
-      .domain(d3.extent(versions, d => new Date(d.issued_at)) as [Date, Date])
+      .domain(xDomain)
       .range([0, iw])
 
     const gwpVals = versions.map(d => d.gwp_total).filter(Boolean) as number[]
@@ -84,9 +91,9 @@ export default function PlantPanel({ plant, onClose }: Props) {
       })
 
     // Grid carbon area (background context)
-    if (data.epd_versions[0]?.grid_co2e_at_issue) {
+    if (versions.some(d => d.grid_co2e_at_issue != null)) {
       const gridVals = versions
-        .filter(d => d.grid_co2e_at_issue)
+        .filter(d => d.grid_co2e_at_issue != null)
         .map(d => ({ date: new Date(d.issued_at), val: d.grid_co2e_at_issue as number }))
 
       if (gridVals.length > 1) {
