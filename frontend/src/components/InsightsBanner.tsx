@@ -85,8 +85,9 @@ export function InsightsBanner({ category }: InsightsProps) {
 
 export function Legend() {
   const items = [
-    { color: '#f5c542', label: 'Indexed by Dexdogs' },
-    { color: '#1a3a2a', label: 'Coming soon — indexing' },
+    { color: '#f5c542', label: 'Indexed for demo' },
+    { color: '#4a9e6b', label: 'EPD only — no temporal graph' },
+    { color: '#6b6b6b', label: 'Not part of demo — access upon request' },
   ]
 
   return (

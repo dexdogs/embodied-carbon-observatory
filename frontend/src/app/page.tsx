@@ -7,6 +7,7 @@ import SearchBar from '@/components/SearchBar'
 import FilterBar from '@/components/FilterBar'
 import PlantPanel from '@/components/PlantPanel'
 import InfoFeedback from '@/components/InfoFeedback'
+import MapSummary from '@/components/MapSummary'
 import { InsightsBanner, Legend } from '@/components/InsightsBanner'
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ''
@@ -23,6 +24,9 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedState, setSelectedState]       = useState<string | null>(null)
   const [plantCount, setPlantCount]             = useState(0)
+  const [indexedCount, setIndexedCount]         = useState(0)
+  const [requestCount, setRequestCount]         = useState(0)
+  const [singleEpdCount, setSingleEpdCount]     = useState(0)
   const [mapReady, setMapReady]                 = useState(false)
 
   // Init map
@@ -148,9 +152,18 @@ export default function Home() {
             }
           }))
         }
+
+        const total = geojson.count
+        const indexed = enriched.features.filter((f: any) => f.properties.has_temporal === true).length
+        const oneEpd = enriched.features.filter((f: any) => f.properties.latest_gwp !== null && f.properties.has_temporal !== true).length
+        const notIndexed = enriched.features.filter((f: any) => f.properties.latest_gwp === null).length
+
         const source = map.current?.getSource('plants') as any
         source?.setData(enriched)
-        setPlantCount(geojson.count)
+        setPlantCount(total)
+        setIndexedCount(indexed)
+        setSingleEpdCount(oneEpd)
+        setRequestCount(notIndexed)
       } catch (err) {
         console.error('Failed to load plants:', err)
       }
@@ -201,7 +214,13 @@ export default function Home() {
       <div className="absolute bottom-8 right-4 z-10">
         <Legend />
       </div>
-      <div className="absolute bottom-8 left-4 z-10">
+      <div className="absolute bottom-8 left-4 z-10 space-y-3">
+        <MapSummary
+          total={plantCount}
+          indexed={indexedCount}
+          accessOnRequest={requestCount}
+          singleEpd={singleEpdCount}
+        />
         <InfoFeedback />
       </div>
 
