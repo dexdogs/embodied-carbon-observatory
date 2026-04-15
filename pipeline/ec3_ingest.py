@@ -288,6 +288,24 @@ class EC3Client:
 
             current_page += 1
 
+    def count_epd_years(self, plant_id: str, min_years: int = 2) -> int:
+        """
+        Count distinct issue years for EPDs belonging to a given EC3 plant ID.
+        Stops early once the minimum year count is reached.
+        """
+        years = set()
+        for epd in self.get_epds(plant_id=plant_id, include_expired=True):
+            issued_at = epd.get("date_of_issue") or epd.get("issued_at") or epd.get("date_published")
+            if not issued_at:
+                continue
+            dt = parse_date(issued_at)
+            if dt is None:
+                continue
+            years.add(dt.year)
+            if len(years) >= min_years:
+                return len(years)
+        return len(years)
+
 
 # ============================================================
 # DATA PARSERS
@@ -589,7 +607,10 @@ def ingest_plants(
     client: EC3Client,
     conn,
     category: str = None,
-    dry_run: bool = False
+    dry_run: bool = False,
+    min_years: int = 0,
+    limit: int = None,
+    new_only: bool = False
 ) -> dict:
     """
     Ingest all US plants from EC3.
@@ -608,6 +629,12 @@ def ingest_plants(
     log.info("=" * 60)
 
     plant_ids = {}  # ec3_plant_id -> db uuid
+    existing_ec3_ids = set()
+    if new_only and not dry_run:
+        with conn.cursor() as cur:
+            cur.execute("SELECT ec3_plant_id FROM plants WHERE ec3_plant_id IS NOT NULL;")
+            existing_ec3_ids = {row[0] for row in cur.fetchall()}
+        log.info(f"Loaded {len(existing_ec3_ids)} existing EC3 plants from database")
 
     for raw_plant in tqdm(client.get_plants(category), desc="Plants", unit="plant"):
         stats["total_fetched"] += 1
@@ -616,6 +643,21 @@ def ingest_plants(
         if plant is None:
             stats["skipped"] += 1
             continue
+
+        if new_only and plant["ec3_plant_id"] in existing_ec3_ids:
+            stats["skipped"] += 1
+            continue
+
+        if min_years and plant["ec3_plant_id"]:
+            try:
+                year_count = client.count_epd_years(plant["ec3_plant_id"], min_years)
+            except Exception as e:
+                stats["errors"] += 1
+                log.error(f"Error checking EPD years for plant {plant['name']}: {e}")
+                continue
+            if year_count < min_years:
+                stats["skipped"] += 1
+                continue
 
         stats["us_plants"] += 1
 
@@ -633,6 +675,10 @@ def ingest_plants(
             stats["errors"] += 1
             log.error(f"Error inserting plant {plant.get('name')}: {e}")
             conn.rollback()
+
+        if limit and stats["inserted"] >= limit:
+            log.info(f"Reached limit of {limit} plants. Stopping ingestion.")
+            break
 
     if not dry_run:
         conn.commit()
@@ -816,6 +862,23 @@ def main():
         help="Parse and validate data without writing to database"
     )
     parser.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help="Limit the number of plants ingested"
+    )
+    parser.add_argument(
+        "--min-years",
+        type=int,
+        default=0,
+        help="Require at least this many distinct EPD issue years to ingest a plant"
+    )
+    parser.add_argument(
+        "--new-only",
+        action="store_true",
+        help="Only ingest plants not already present in the database"
+    )
+    parser.add_argument(
         "--plants-only",
         action="store_true",
         help="Only ingest plants, skip EPDs"
@@ -857,7 +920,10 @@ def main():
             _, plant_ids = ingest_plants(
                 client, conn,
                 category=args.category,
-                dry_run=args.dry_run
+                dry_run=args.dry_run,
+                min_years=args.min_years,
+                limit=args.limit,
+                new_only=args.new_only
             )
 
         if not args.plants_only:
